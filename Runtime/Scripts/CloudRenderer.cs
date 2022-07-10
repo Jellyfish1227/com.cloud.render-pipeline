@@ -13,7 +13,7 @@ public partial class CloudRenderer
         name = BufferName
     };
 
-    private Gbuffer gBuffer = new Gbuffer();
+    //private Gbuffer gBuffer = new Gbuffer();
 
     private static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
     private static ShaderTagId[] ShaderTagIds = new[]
@@ -66,7 +66,7 @@ public partial class CloudRenderer
     {
         buffer.ReleaseTemporaryRT(cameraFrameTexture);
         buffer.ReleaseTemporaryRT(cameraDepthTexture);
-        gBuffer.Cleanup();
+        //gBuffer.Cleanup();
     }
 
     void SetTexture()
@@ -117,7 +117,7 @@ public partial class CloudRenderer
         
         if (fillGBuffer)
         {
-            gBuffer.DoGBufferPass(useDynamicBatching);
+            //gBuffer.DoGBufferPass(useDynamicBatching);
             buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
             ExecuteBuffer();
         }
