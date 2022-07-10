@@ -11,7 +11,6 @@ Shader "Cloud/Lit"
         { 
             "RenderType"="Opaque"
         }
-
         HLSLINCLUDE
         #include "../ShaderLibrary/Common.hlsl"
         ENDHLSL
