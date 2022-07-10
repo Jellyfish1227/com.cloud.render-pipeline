@@ -1,0 +1,10 @@
+{
+  "description": "Cloud Render Pipeline",
+  "displayName": "Cloud Render Pipeline",
+  "name": "com.cloud.render-pipeline",
+  "version": "0.0.1",
+  "dependencies": {
+    "com.unity.render-pipelines.core": "12.1.7"
+  },
+  "hideInEditor": false
+}
