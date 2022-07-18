@@ -21,7 +21,12 @@ TEXTURE2D(_BaseMap);
 SAMPLER(sampler_BaseMap);
 TEXTURE2D(_CameraDepthTexture);
 SAMPLER(sampler_CameraDepthTexture);
+
 CBUFFER_START(UnityPerMaterial)
+float4 _BaseMap_ST;
 float4 _BaseColor;
+float _Metallic;
+float _Smoothness;
 CBUFFER_END
+
 #endif

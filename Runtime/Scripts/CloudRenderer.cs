@@ -30,6 +30,7 @@ public partial class CloudRenderer
     private static int cameraDepthTexture = Shader.PropertyToID("_CameraDepthTexture");
     private static int cameraFrameTexture = Shader.PropertyToID("_CameraFrameTexture");
     private static Material preDepthPassMat;
+    private Lighting lighting = new Lighting();
     public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useZPrePass, 
         bool fillGBuffer) 
     {
@@ -45,6 +46,7 @@ public partial class CloudRenderer
             return;
         }
         Setup();
+        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry();
         DrawUnsupportedShaders();
         DrawGizmos();

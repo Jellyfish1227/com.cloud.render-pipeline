@@ -16,6 +16,7 @@ Shader "Cloud/ZPrePass"
         {
             Name "Z-Pre Pass"
             HLSLPROGRAM
+            #pragma target 5.0
             #pragma vertex vert
             #pragma fragment frag
             #include "../ShaderLibrary/Common.hlsl"

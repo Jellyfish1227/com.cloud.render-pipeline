@@ -15,3 +15,4 @@ MonoBehaviour:
   useDynamicBatching: 1
   useSRPBatcher: 1
   useZPrePass: 1
+  fillGBffer: 0

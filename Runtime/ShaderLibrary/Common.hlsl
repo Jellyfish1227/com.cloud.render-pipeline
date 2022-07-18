@@ -4,6 +4,7 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 #include "UnityInput.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
 struct VertexPositionInputs
 {
@@ -25,6 +26,11 @@ VertexPositionInputs GetVertexPositionInputs(float3 positionOS)
     input.positionNDC.zw = input.positionCS.zw;
 
     return input;
+}
+
+float Square(float v)
+{
+    return v * v;
 }
 
 #endif

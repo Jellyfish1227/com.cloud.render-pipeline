@@ -21,6 +21,7 @@ public class CloudRP : RenderPipeline
     public CloudRP(bool useDynamicBatching, bool useSRPBatcher, bool useZPrePass, bool fillGBuffer)
     {
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+        GraphicsSettings.lightsUseLinearIntensity = true;
         this.useDynamicBatching = useDynamicBatching;
         this.useZPrePass = useZPrePass;
         this.fillGBuffer = fillGBuffer;
