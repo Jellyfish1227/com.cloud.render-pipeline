@@ -9,21 +9,25 @@ public class CloudRP : RenderPipeline
     private bool useDynamicBatching;
     private bool useZPrePass;
     private bool fillGBuffer;
+    private ComputeShader clusterLight;
+    private bool clusterDebug;
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)
     {
         foreach (Camera camera in cameras)
         {
             GraphicsSettings.useScriptableRenderPipelineBatching = true;
-            renderer.Render(context, camera, useDynamicBatching, useZPrePass, fillGBuffer);
+            renderer.Render(context, camera, useDynamicBatching, useZPrePass, fillGBuffer, clusterLight, clusterDebug);
         }
     }
 
-    public CloudRP(bool useDynamicBatching, bool useSRPBatcher, bool useZPrePass, bool fillGBuffer)
+    public CloudRP(bool useDynamicBatching, bool useSRPBatcher, bool useZPrePass, bool fillGBuffer, ComputeShader clusterLight, bool clusterDebug)
     {
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
         this.useDynamicBatching = useDynamicBatching;
         this.useZPrePass = useZPrePass;
         this.fillGBuffer = fillGBuffer;
+        this.clusterLight = clusterLight;
+        this.clusterDebug = clusterDebug;
     }
 }

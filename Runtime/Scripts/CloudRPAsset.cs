@@ -17,9 +17,12 @@ public class CloudRPAsset : RenderPipelineAsset
     [Header("Fill GBuffer")]
     [SerializeField]
     bool fillGBffer = false;
+    [Header("Cluster Light")]
+    [SerializeField] private ComputeShader clusterLight;
+    [SerializeField] private bool debugMode = false;
     protected override RenderPipeline CreatePipeline()
     {
-        return new CloudRP(useDynamicBatching, useSRPBatcher, useZPrePass, fillGBffer);
+        return new CloudRP(useDynamicBatching, useSRPBatcher, useZPrePass, fillGBffer, clusterLight, debugMode);
     }
     
 }

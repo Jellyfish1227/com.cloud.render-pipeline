@@ -10,6 +10,9 @@ float4 _TimeParameters; // t, sin(t), cos(t)
 
 float3 _WorldSpaceCameraPos;
 
+
+float4 _ZBufferParams;
+
 // x = 1 or -1 (-1 if projection is flipped)
 // y = near plane
 // z = far plane

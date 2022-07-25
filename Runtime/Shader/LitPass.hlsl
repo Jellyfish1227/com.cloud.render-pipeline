@@ -15,6 +15,7 @@ Varyings vert(Attributes input)
     output.positionWS = posInput.positionWS;
     output.normalWS = TransformObjectToWorldNormal(input.normalOS);
     output.positionCS = posInput.positionCS;
+    output.positionNDC = posInput.positionNDC;
     return output;
 }
 
@@ -30,7 +31,18 @@ float4 frag(Varyings input) : SV_TARGET
     surface.viewDir = normalize(_WorldSpaceCameraPos - input.positionWS);
     BRDFData data = GetBRDF(surface);
     float3 col = GetLighting(surface, data);
-    return float4(col, surface.alpha);
+    float2 screenUV = input.positionNDC.xy / input.positionNDC.w * 8.0;
+    float z = saturate((input.positionWS.z - _ProjectionParams.y) / (_ProjectionParams.z - _ProjectionParams.y)) * 8.0;
+    uint3 voxelIndex = (screenUV, z);
+    float2 index = _PointLightTexture[voxelIndex];
+    float4 color = 0.0;
+    for (int i = index.x; i < index.y; i++)
+    {
+        PointLight light = _PointLightsBuffer[_PointLightsIndexBuffer[i] - 1];
+        color += light.lightColor;
+    }
+    //return float4(col, surface.alpha);
+    return color;//float4(index, 0.0, 1.0);//
 }
 
 #endif

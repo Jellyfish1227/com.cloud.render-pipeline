@@ -16,3 +16,5 @@ MonoBehaviour:
   useSRPBatcher: 1
   useZPrePass: 1
   fillGBffer: 0
+  clusterLight: {fileID: 7200000, guid: 935c32bbbeade10448995e45c8accac4, type: 3}
+  debugMode: 1

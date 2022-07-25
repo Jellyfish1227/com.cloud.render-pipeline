@@ -31,8 +31,10 @@ public partial class CloudRenderer
     private static int cameraFrameTexture = Shader.PropertyToID("_CameraFrameTexture");
     private static Material preDepthPassMat;
     private Lighting lighting = new Lighting();
-    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useZPrePass, 
-        bool fillGBuffer) 
+    private ClusterLight clusterLight = new ClusterLight();
+
+    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useZPrePass,
+        bool fillGBuffer, ComputeShader clusterLight, bool clusterDebug) 
     {
         this.camera = camera;
         this.context = context;
@@ -45,8 +47,9 @@ public partial class CloudRenderer
         {
             return;
         }
+        lighting.Setup(ref context, ref cullingResults);
+        this.clusterLight.Setup(ref context, ref cullingResults, camera, clusterLight, clusterDebug);
         Setup();
-        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry();
         DrawUnsupportedShaders();
         DrawGizmos();
@@ -85,10 +88,10 @@ public partial class CloudRenderer
         context.SetupCameraProperties(camera);
         CameraClearFlags flags = camera.clearFlags;
         SetTexture();
-        buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
+        buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags <= CameraClearFlags.Color,
             flags == CameraClearFlags.Color ? camera.backgroundColor.linear : Color.clear);
         buffer.SetRenderTarget(cameraFrameTexture, cameraDepthTexture);
-        buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
+        buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags <= CameraClearFlags.Color,
             flags == CameraClearFlags.Color ? camera.backgroundColor.linear : Color.clear);
         buffer.BeginSample(SampleName);
         ExecuteBuffer();
