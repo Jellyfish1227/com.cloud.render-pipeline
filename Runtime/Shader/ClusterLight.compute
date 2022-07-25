@@ -3,9 +3,9 @@
 #pragma kernel ClusterLight
 
 #define MaxVoxelLightCount 64
-#define XRes 8
-#define YRes 8
-#define ZRes 8
+#define XRes 32
+#define YRes 32
+#define ZRes 128
 
 struct PointLight
 {
@@ -70,7 +70,7 @@ float SphereIntersect(float4 sphere, float4 planes[6])
     [unroll]
     for(uint i = 0; i < 6; ++i)
     {
-        if (GetDistanceToPlane(planes[i], sphere.xyz) > sphere.w) return 0;
+        if (abs(GetDistanceToPlane(planes[i], sphere.xyz)) > sphere.w) return 0;
     }
     return 1;
 }
@@ -84,10 +84,14 @@ void XYPlane(uint2 id : SV_DispatchThreadID)
     rightTopUV = rightTopUV * 2 - 1;
     const float nearZ = 1;
     XYPlanes planes;
-    planes.topPlane = GetPlane(mul(_InvVP, float4(-1, rightTopUV.y, nearZ, 1)), mul(_InvVP, float4(1, rightTopUV.y, nearZ, 1)), mul(_InvVP, float4(0, rightTopUV.y, 0.5, 1)));//TOP
-    planes.bottomPlane = GetPlane(mul(_InvVP, float4(1, leftBotUV.y, nearZ, 1)), mul(_InvVP, float4(-1, leftBotUV.y, nearZ, 1)), mul(_InvVP, float4(0, leftBotUV.y, 0.5, 1)));//BOTTOM
-    planes.leftPlane = GetPlane(mul(_InvVP, float4(leftBotUV.x, -1, nearZ, 1)), mul(_InvVP, float4(leftBotUV.x, 1, nearZ, 1)), mul(_InvVP, float4(leftBotUV.x, 0, 0.5, 1)));//LEFT
-    planes.rightPlane = GetPlane(mul(_InvVP, float4(rightTopUV.x, 1, nearZ, 1)), mul(_InvVP, float4(rightTopUV.x, -1, nearZ, 1)), mul(_InvVP, float4(rightTopUV.x, 0, 0.5, 1)));//RIGHT
+    planes.topPlane = GetPlane(mul(_InvVP, float4(-1, rightTopUV.y, nearZ, 1)),
+        mul(_InvVP, float4(1, rightTopUV.y, nearZ, 1)), mul(_InvVP, float4(0, rightTopUV.y, 0.5, 1)));//TOP
+    planes.bottomPlane = GetPlane(mul(_InvVP, float4(1, leftBotUV.y, nearZ, 1)),
+        mul(_InvVP, float4(-1, leftBotUV.y, nearZ, 1)), mul(_InvVP, float4(0, leftBotUV.y, 0.5, 1)));//BOTTOM
+    planes.leftPlane = GetPlane(mul(_InvVP, float4(leftBotUV.x, -1, nearZ, 1)),
+        mul(_InvVP, float4(leftBotUV.x, 1, nearZ, 1)), mul(_InvVP, float4(leftBotUV.x, 0, 0.5, 1)));//LEFT
+    planes.rightPlane = GetPlane(mul(_InvVP, float4(rightTopUV.x, 1, nearZ, 1)),
+        mul(_InvVP, float4(rightTopUV.x, -1, nearZ, 1)), mul(_InvVP, float4(rightTopUV.x, 0, 0.5, 1)));//RIGHT
     _XYPlaneBuffer[id.x + id.y * XRes] = planes;
 }
 

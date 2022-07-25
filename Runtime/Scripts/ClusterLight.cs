@@ -9,9 +9,9 @@ public class ClusterLight
 {
     private const int maxAdditionalLightCount = 1024;
     private const int maxVoxelAdditionalLightCount = 64;
-    private const int XRes = 8;
-    private const int YRes = 8;
-    private const int ZRes = 8;
+    private const int XRes = 32;
+    private const int YRes = 32;
+    private const int ZRes = 128;
     private const int maxVoxelCount = XRes * YRes * ZRes;
     
     private static int pointLightCountID = Shader.PropertyToID("_PointLightCount");
@@ -24,6 +24,7 @@ public class ClusterLight
     private static int cameraForward = Shader.PropertyToID("_CameraForward");
     private static int pointLightsBufferID = Shader.PropertyToID("_PointLightsBuffer");
     private static int pointLightsIndexBufferID = Shader.PropertyToID("_PointLightsIndexBuffer");
+    private static int resolutionID = Shader.PropertyToID("_Resolution");
 
     struct PointLight
     {
@@ -325,6 +326,7 @@ public class ClusterLight
         cmd.SetGlobalBuffer(pointLightsBufferID, pointLightsBuffer);
         cmd.SetGlobalBuffer(pointLightsIndexBufferID, pointLightsIndexBuffer);
         cmd.SetGlobalTexture(PointLightTexture, pointLightTexture);
+        cmd.SetGlobalVector(resolutionID, new Vector4(XRes, YRes, ZRes, maxVoxelAdditionalLightCount));
     }
     
     void DoClusterLight()

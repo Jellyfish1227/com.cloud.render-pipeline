@@ -41,7 +41,7 @@ float SpecularStrength(Surface surface, BRDFData data, Light light)
     return r2 / (d2 *max(0.1, lh2) * normalization);
 }
 
-float DirectBRDF(Surface surface, BRDFData data, Light light)
+float3 DirectBRDF(Surface surface, BRDFData data, Light light)
 {
     return SpecularStrength(surface, data, light) * data.specular + data.diffuse;
 }
