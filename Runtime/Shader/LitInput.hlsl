@@ -33,6 +33,7 @@ Texture3D<uint2> _PointLightTexture;
 StructuredBuffer<PointLight> _PointLightsBuffer;
 StructuredBuffer<uint> _PointLightsIndexBuffer;
 uint4 _Resolution;
+float4 _CameraForward;
 
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;

@@ -90,7 +90,7 @@ public partial class CloudRenderer
         SetTexture();
         buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags <= CameraClearFlags.Color,
             flags == CameraClearFlags.Color ? camera.backgroundColor.linear : Color.clear);
-        buffer.SetRenderTarget(cameraFrameTexture, cameraDepthTexture);
+        buffer.SetRenderTarget(cameraFrameTexture, depth: cameraDepthTexture);
         buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags <= CameraClearFlags.Color,
             flags == CameraClearFlags.Color ? camera.backgroundColor.linear : Color.clear);
         buffer.BeginSample(SampleName);

@@ -11,7 +11,7 @@ public class ClusterLight
     private const int maxVoxelAdditionalLightCount = 64;
     private const int XRes = 32;
     private const int YRes = 32;
-    private const int ZRes = 128;
+    private const int ZRes = 64;
     private const int maxVoxelCount = XRes * YRes * ZRes;
     
     private static int pointLightCountID = Shader.PropertyToID("_PointLightCount");
@@ -89,7 +89,10 @@ public class ClusterLight
         if (camera.cameraType == CameraType.Game)
         {
             pointLightsIdnex = new int[maxVoxelAdditionalLightCount * maxVoxelCount];
-            SetDebugArrays();
+            if (debug)
+            {
+                SetDebugArrays();
+            }
             PrepareAdditionalLight();
             SetupClusterLight();
             SetupGlobalVal();
@@ -140,6 +143,7 @@ public class ClusterLight
         Matrix4x4 viewPro = GL.GetGPUProjectionMatrix(camera.projectionMatrix, false)* camera.worldToCameraMatrix;
         clusterComputeShader.SetMatrix(invVP, Matrix4x4.Inverse(viewPro));
         clusterComputeShader.SetVector(cameraForward, camera.transform.forward);
+        cmd.SetGlobalVector(cameraForward, camera.transform.forward);
         
         Vector3 nearPos = camera.nearClipPlane * camera.transform.forward + camera.transform.position;
         Vector3 farPos = camera.farClipPlane * camera.transform.forward + camera.transform.position;

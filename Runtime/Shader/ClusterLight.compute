@@ -5,7 +5,7 @@
 #define MaxVoxelLightCount 64
 #define XRes 32
 #define YRes 32
-#define ZRes 128
+#define ZRes 64
 
 struct PointLight
 {
