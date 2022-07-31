@@ -20,9 +20,11 @@ public class CloudRPAsset : RenderPipelineAsset
     [Header("Cluster Light")]
     [SerializeField] private ComputeShader clusterLight;
     [SerializeField] private bool debugMode = false;
+    [Header("Shadow Settings")]
+    [SerializeField] private ShadowSettings shadowSettings = default;
     protected override RenderPipeline CreatePipeline()
     {
-        return new CloudRP(useDynamicBatching, useSRPBatcher, useZPrePass, fillGBffer, clusterLight, debugMode);
+        return new CloudRP(useDynamicBatching, useSRPBatcher, useZPrePass, fillGBffer, clusterLight, debugMode, shadowSettings);
     }
     
 }

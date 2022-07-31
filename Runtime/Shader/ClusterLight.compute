@@ -75,7 +75,7 @@ float SphereIntersect(float4 sphere, float4 planes[6])
     return 1;
 }
 
-[numthreads(XRes, YRes, 1)]
+[numthreads(8, 8, 1)]
 void XYPlane(uint2 id : SV_DispatchThreadID)
 {
     float2 leftBotUV = id.xy / float2(XRes, YRes);
@@ -95,7 +95,7 @@ void XYPlane(uint2 id : SV_DispatchThreadID)
     _XYPlaneBuffer[id.x + id.y * XRes] = planes;
 }
 
-[numthreads(ZRes, 1, 1)]
+[numthreads(8, 1, 1)]
 void ZPlane(uint3 id : SV_DispatchThreadID)
 {
     float3 forwardPos = lerp(_CameraNearPos, _CameraFarPos, id.x / (float)ZRes);
@@ -105,7 +105,7 @@ void ZPlane(uint3 id : SV_DispatchThreadID)
     planes.frontPlane = GetPlane(-_CameraForward, forwardPos);
     _ZPlaneBuffer[id.x] = planes;
 }
-[numthreads(XRes, YRes, 1)]
+[numthreads(8, 8, 8)]
 void ClusterLight(uint3 id : SV_DispatchThreadID)
 {
     float4 planes[6];

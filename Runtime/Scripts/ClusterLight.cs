@@ -56,7 +56,10 @@ public class ClusterLight
     private XYPlanes[] xyPlanesArray;
     private ZPlanes[] zPlanesArray;
     private ScriptableRenderContext ctx;
-    private CommandBuffer cmd;
+    private CommandBuffer cmd = new CommandBuffer
+    {
+        name = "Cluster Light"
+    };
     private CullingResults cullingResults;
     
     private ComputeShader clusterComputeShader;
@@ -79,16 +82,8 @@ public class ClusterLight
         this.ctx = ctx;
         this.cullingResults = cullingResults;
         debug = clusterDebug;
-        cmd = new CommandBuffer()
-        {
-            name = "Cluster Light"
-        };
-        cmd.BeginSample(cmd.name);
-        ctx.ExecuteCommandBuffer(cmd);
-        cmd.Clear();
         if (camera.cameraType == CameraType.Game)
         {
-            pointLightsIdnex = new int[maxVoxelAdditionalLightCount * maxVoxelCount];
             if (debug)
             {
                 SetDebugArrays();
@@ -102,13 +97,12 @@ public class ClusterLight
         {
             DoDebugDrawLines();
         }
-        cmd.EndSample(cmd.name);
-        ctx.ExecuteCommandBuffer(cmd);
-        cmd.Clear();
+        ExecuteBuffer();
     }
     
     void SetDebugArrays()
     {
+        pointLightsIdnex = new int[maxVoxelAdditionalLightCount * maxVoxelCount];
         xyPlanesArray = new XYPlanes[XRes * YRes];
         zPlanesArray = new ZPlanes[ZRes];
     }
@@ -199,7 +193,7 @@ public class ClusterLight
     {
         clusterComputeShader.SetBuffer(0, XYPlaneBuffer, xyPlaneBuffer);
         
-        clusterComputeShader.Dispatch(0, 1, 1, 1);
+        clusterComputeShader.Dispatch(0, XRes / 8, YRes / 8, 1);
         
         if (debug)
         {
@@ -211,7 +205,7 @@ public class ClusterLight
     {
         clusterComputeShader.SetBuffer(1, ZPlaneBuffer, zPlaneBuffer);
         
-        clusterComputeShader.Dispatch(1, 1, 1, 1);
+        clusterComputeShader.Dispatch(1, ZRes / 8, 1, 1);
         
         if (debug)
         {
@@ -308,8 +302,6 @@ public class ClusterLight
 
     void DoLight()
     {
-        pointLightsIndexBuffer.SetData(pointLightsIdnex);
-        
         clusterComputeShader.SetBuffer(2, pointLightsBufferID, pointLightsBuffer);
         clusterComputeShader.SetBuffer(2, pointLightsIndexBufferID, pointLightsIndexBuffer);
         clusterComputeShader.SetBuffer(2, XYPlaneBuffer, xyPlaneBuffer);
@@ -317,7 +309,7 @@ public class ClusterLight
         
         clusterComputeShader.SetTexture(2, PointLightTexture, pointLightTexture);
         
-        clusterComputeShader.Dispatch(2, 1, 1, ZRes);
+        clusterComputeShader.Dispatch(2, XRes / 8, YRes / 8, ZRes / 8);
         
         if (debug)
         {
@@ -332,6 +324,12 @@ public class ClusterLight
         cmd.SetGlobalTexture(PointLightTexture, pointLightTexture);
         cmd.SetGlobalVector(resolutionID, new Vector4(XRes, YRes, ZRes, maxVoxelAdditionalLightCount));
     }
+
+    void ExecuteBuffer()
+    {
+        ctx.ExecuteCommandBuffer(cmd);
+        cmd.Clear();
+    }
     
     void DoClusterLight()
     {
@@ -339,7 +337,6 @@ public class ClusterLight
         DoZPlanes();
         DoLight();
         SetLightPassVal();
-        
     }
 
     ~ClusterLight()

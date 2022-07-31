@@ -34,7 +34,7 @@ public partial class CloudRenderer
     private ClusterLight clusterLight = new ClusterLight();
 
     public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useZPrePass,
-        bool fillGBuffer, ComputeShader clusterLight, bool clusterDebug) 
+        bool fillGBuffer, ComputeShader clusterLight, bool clusterDebug, ShadowSettings shadowSettings) 
     {
         this.camera = camera;
         this.context = context;
@@ -43,12 +43,12 @@ public partial class CloudRenderer
         this.fillGBuffer = fillGBuffer;
         PrepareBuffer();
         PrepareForSceneWindow();
-        if (!Cull())
+        if (!Cull(shadowSettings.maxDistance))
         {
             return;
         }
-        lighting.Setup(ref context, ref cullingResults);
         this.clusterLight.Setup(ref context, ref cullingResults, camera, clusterLight, clusterDebug);
+        lighting.Setup(ref context, ref cullingResults, shadowSettings);
         Setup();
         DrawVisibleGeometry();
         DrawUnsupportedShaders();
@@ -57,10 +57,11 @@ public partial class CloudRenderer
         Submit();
     }
 
-    bool Cull()
+    bool Cull(float maxShadowDistance)
     {
         if(camera.TryGetCullingParameters(out ScriptableCullingParameters param))
         {
+            param.shadowDistance = Mathf.Min(maxShadowDistance, camera.farClipPlane);
             cullingResults = context.Cull(ref param);
             return true;
         }
@@ -69,6 +70,7 @@ public partial class CloudRenderer
 
     void Cleanup()
     {
+        lighting.Cleanup();
         buffer.ReleaseTemporaryRT(cameraFrameTexture);
         buffer.ReleaseTemporaryRT(cameraDepthTexture);
         //gBuffer.Cleanup();
